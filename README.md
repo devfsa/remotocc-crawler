@@ -1,5 +1,8 @@
-# remotobr
-Remoto Brasil - Dicas e jobs remotos aqui :D
+# Remoto Brasil
+
+Dicas e jobs remotos aqui :D
+
+![StackOverflow Jobs](http://g.recordit.co/fsRjXHEkNu.gif)
 
 # Install
 ```
