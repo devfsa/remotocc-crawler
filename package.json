@@ -1,0 +1,22 @@
+{
+  "name": "remotobr-crawler",
+  "version": "1.0.0",
+  "description": "Remoto Brasil - Dicas e jobs remotos aqui :D",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devfsa/remotobr-crawler.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/devfsa/remotobr-crawler/issues"
+  },
+  "homepage": "http://remoto.cc",
+  "dependencies": {
+    "crawler": "^1.1.2"
+  }
+}
