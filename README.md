@@ -15,7 +15,6 @@ npm start
 ```
 
 ## Roadmap
-
 - [X] Cawlear a primeira página do Stack Overflow Jobs
 - [ ] Paginar os resultados de busca do Stack Overflow Jobs
 - [ ] Persistir os dados coletados em um banco de dados (Vamos de MongoDB mesmo)
