@@ -84,7 +84,13 @@ async.waterfall([
 
     async.parallelLimit(parallelFunctions, 10, callback);
   }
-], function(error, result) {
-  console.log(JSON.stringify(result));
+], function(error, results) {
+  let output = [];
+
+  results.forEach(function(result) {
+    output = output.concat(result);
+  });
+
+  console.log(JSON.stringify(output));
 });
 
