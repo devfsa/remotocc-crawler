@@ -1,42 +1,82 @@
 const Crawler = require("crawler");
+const async = require("async");
 
-const c = new Crawler({
-  maxConnections : 10,
-  // This will be called for each crawled page
-  callback : function (error, res, done) {
-    if(error) {
-      console.log(error);
-    } else {
-      let $ = res.$;
-      let jobs = [];
-      let job = {};
+function getNumberOfPages(URL, callback) {
+  const c = new Crawler({
+    maxConnections: 1,
+    callback : function (error, res) {
+      if(error) {
+        console.log(error);
+      } else {
+        const $ = res.$;
 
-      $('.-job-summary').each(function() {
-        Object.assign(job, {});
+        const pages = $('.job-link.selected').attr('title');
+        const numberOfPages = pages.split(' of ')[1];
 
-        job = {
-          title: $(this).find('.-title h2 a').text(),
-          url: $(this).find('.-title h2 a').attr('href'),
-          company: $(this).find('.-company .-name').text(),
-          timestamp: new Date(),
-          tags: []
-        };
+        callback(null, numberOfPages);
+      }
+    }
+  });
 
-        $(this).find('.-tags a').each(function() {
-          job.tags.push($(this).text());
+  c.queue(URL);
+}
+
+function getPageContent(URL, callback) {
+  const c = new Crawler({
+    maxConnections: 1,
+    callback: function (error, res, done) {
+      if(error) {
+        console.log(error);
+      } else {
+        const $ = res.$;
+        let jobs = [];
+        let job = {};
+
+        $('.-job-summary').each(function() {
+          Object.assign(job, {});
+
+          job = {
+            title: $(this).find('.-title h2 a').text(),
+            url: $(this).find('.-title h2 a').attr('href'),
+            company: $(this).find('.-company .-name').text(),
+            timestamp: new Date(),
+            tags: []
+          };
+
+          $(this).find('.-tags a').each(function() {
+            job.tags.push($(this).text());
+          });
+
+          jobs.push(job);
         });
 
-        jobs.push(job);
-      });
+        callback(null, jobs);
+      }
+    }
+  });
 
-      jobs.map(function(job) {
-        console.log(job);
-      });
+  c.queue(URL);
+}
+
+const URL = 'https://stackoverflow.com/jobs?l=Remote&sort=p';
+
+async.waterfall([
+  (callback) => getNumberOfPages(URL, callback),
+  (numberOfPages, callback) => {
+    let pagesList = [];
+    let parallelFunctions = [];
+
+    for(var i = 1; i <= numberOfPages; i++) {
+      pagesList.push(i);
     }
 
-    done();
+    pagesList.forEach(function(page) {
+      parallelFunctions.push((done) => getPageContent(URL + '&pg=' + page, done));
+    });
+
+    async.parallelLimit(parallelFunctions, 10, callback);
   }
+], function(error, result) {
+  console.log(JSON.stringify(result));
 });
 
-// Queue just one URL, with default callbackk
-c.queue('https://stackoverflow.com/jobs?l=Remote&sort=p');
