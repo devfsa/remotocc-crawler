@@ -36,15 +36,23 @@ function getPageContent(URL, callback) {
           Object.assign(job, {});
 
           job = {
-            title: $(this).find('.-title h2 a').text(),
+            title: $(this).find('.-title h2 a').text().trim(),
             url: $(this).find('.-title h2 a').attr('href'),
-            company: $(this).find('.-company .-name').text(),
+            company: $(this).find('.-company .-name').text().trim(),
             timestamp: new Date(),
+            perks: [],
             tags: []
           };
 
+          $(this).find('.-perks span').each(function() {
+            job.perks.push({
+              key: $(this).attr('class').split('-')[1],
+              value: $(this).text().trim()
+            });
+          });
+
           $(this).find('.-tags a').each(function() {
-            job.tags.push($(this).text());
+            job.tags.push($(this).text().trim());
           });
 
           jobs.push(job);
