@@ -1,8 +1,7 @@
 const Crawler = require("crawler");
 const async = require("async");
 const MongoClient = require('mongodb').MongoClient;
-const url = 'mongodb://localhost';
-const dbName = 'remotobr';
+const url = process.env.MONGOLAB_URI || 'mongodb://localhost/remotobr';
 
 function getNumberOfPages(URL, callback) {
   const c = new Crawler({
@@ -69,6 +68,13 @@ function getPageContent(URL, callback) {
   c.queue(URL);
 }
 
+function insertJobs(jobs, db, callback) {
+  db.collection('jobs').insertMany(jobs, function(err, result) {
+    if(err) callback(err);
+    else callback(null, result);
+  });
+}
+
 const URL = 'https://stackoverflow.com/jobs?l=Remote&sort=p';
 
 async.waterfall([
@@ -94,14 +100,15 @@ async.waterfall([
     output = output.concat(result);
   });
 
-  MongoClient.connect(url, function(err, client) {
-    console.log('connected successfully');
-
-    const db = client.db(dbName);
-    db.collection('jobs').insertMany(output, function(err, result) {
-      console.log(JSON.stringify(result));
-      client.close();
-    });
+  MongoClient.connect(url, (err, db) => {
+    if(err) {
+      console.log(err);
+    } else {
+      insertJobs(output, db, (err, result) => {
+        console.log(result);
+        db.close();
+      });
+    }
   });
 });
 
