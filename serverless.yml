@@ -14,6 +14,7 @@ custom:
 provider:
   name: aws
   runtime: nodejs6.10
+  memorySize: 1024
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -22,14 +23,6 @@ provider:
 
 # The `functions` block defines what code to deploy
 functions:
-  helloWorld:
-    handler: handler.helloWorld
-    # The `events` block defines how to trigger the handler.helloWorld code
-    events:
-      - http:
-          path: hello-world
-          method: get
-          cors: true
   crawlerRemoteJobs:
     handler: handler.crawlerRemoteJobs
     events:
