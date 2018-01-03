@@ -5,12 +5,20 @@
 # uses to deploy your code to your provider of choice
 
 # The `service` block is the name of the service
-service: serverless-hello-world
+service: serverless-remote-cc
+
+custom:
+  bucket: remoto-cc
 
 # The `provider` block defines where your service will be deployed
 provider:
   name: aws
   runtime: nodejs6.10
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: "*"
 
 # The `functions` block defines what code to deploy
 functions:
@@ -22,3 +30,10 @@ functions:
           path: hello-world
           method: get
           cors: true
+  crawlerRemoteJobs:
+    handler: handler.crawlerRemoteJobs
+    events:
+      - http:
+          path: crawler-remote-jobs
+          method: get
+          # cors: true // use only in production
