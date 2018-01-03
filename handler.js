@@ -14,3 +14,10 @@ module.exports.helloWorld = (event, context, callback) => {
 
   callback(null, response);
 };
+
+module.exports.crawlerJobs = (event, context, callback) => {
+  console.log('LogScheduledEvent');
+  console.log('Received event:', JSON.stringify(event, null, 2));
+  
+  callback(null, 'Finished');
+}
