@@ -1,5 +1,8 @@
 const Crawler = require("crawler");
 const async = require("async");
+const MongoClient = require('mongodb').MongoClient;
+const url = 'mongodb://localhost';
+const dbName = 'remotobr';
 
 function getNumberOfPages(URL, callback) {
   const c = new Crawler({
@@ -91,6 +94,14 @@ async.waterfall([
     output = output.concat(result);
   });
 
-  console.log(JSON.stringify(output));
+  MongoClient.connect(url, function(err, client) {
+    console.log('connected successfully');
+
+    const db = client.db(dbName);
+    db.collection('jobs').insertMany(output, function(err, result) {
+      console.log(JSON.stringify(result));
+      client.close();
+    });
+  });
 });
 
