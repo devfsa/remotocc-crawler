@@ -21,6 +21,7 @@ module.exports.crawlerRemoteJobs = (event, context, callback) => {
       Body: textJson, 
       Bucket: "remote-cc", 
       Key: "jobs.json", 
+      ACL: 'public-read',
       ServerSideEncryption: "AES256", 
       Tagging: "key1=value1&key2=value2"
      };
