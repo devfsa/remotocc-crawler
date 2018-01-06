@@ -30,10 +30,3 @@ functions:
           path: crawler-remote-jobs
           method: get
           # cors: true // use only in production
-  parseJsonJobsToYmal:
-    handler: handler.parseJsonJobsToYmal
-    events:
-      - http:
-          path: parse-json-jobs-to-ymal
-          method: get
-          # cors: true // use only in production
