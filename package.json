@@ -19,6 +19,7 @@
   "dependencies": {
     "async": "^2.6.0",
     "aws-sdk": "^2.176.0",
-    "crawler": "^1.1.2"
+    "crawler": "^1.1.2",
+    "yamljs": "^0.3.0"
   }
 }
