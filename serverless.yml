@@ -25,8 +25,16 @@ provider:
 functions:
   crawlerRemoteJobs:
     handler: handler.crawlerRemoteJobs
+    timeout: 20
     events:
       - http:
           path: crawler-remote-jobs
+          method: get
+          # cors: true // use only in production
+  sendJobsFileToRepository:
+    handler: handler.sendJobsFileToRepository
+    events:
+      - http:
+          path: send-jobs-file-to-repository
           method: get
           # cors: true // use only in production
