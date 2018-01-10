@@ -1,6 +1,6 @@
 const Crawler = require("crawler");
 const async   = require("async");
-const proxy   = 'http://177.223.198.155:53281';
+const proxy   = 'http://198.50.160.147:8888';
 
 function getNumberOfPages(URL, callback) {
   const c = new Crawler({
@@ -25,7 +25,6 @@ function getPageContent(URL, callback) {
   const c = new Crawler({
     maxConnections: 1,
     callback: function (error, res, done) {
-      console.log(res);
       if(error) {
         console.log(error);
       } else {

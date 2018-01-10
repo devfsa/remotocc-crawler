@@ -14,7 +14,7 @@ module.exports.crawlerRemoteJobs = (event, context, callback) => {
       output = output.concat(result);
     });
     
-    let yamlString = YAML.stringify({ updated_at: new Date(), jobs: output });
+    let yamlString = YAML.stringify(output, 4);
 
     S3PutObject(yamlString, 'jobs.yml', 'public-read', function(err, data) {
       if (err) console.log('error', err, err.stack); // an error occurred
@@ -48,6 +48,7 @@ module.exports.sendJobsFileToRepository = (event, context, callback) => {
   const repo = process.env.GITHUB_REPO;
   const filename = process.env.GITHUB_FILE;
   const token = process.env.GITHUB_TOKEN;
+  const path = process.env.DATA_FILE;
   const commitMessage = 'Code commited from AWS Lambda at ' + moment().format();
   
   var code, referenceCommitSha, newTreeSha, newCommitSha;
@@ -97,7 +98,7 @@ module.exports.sendJobsFileToRepository = (event, context, callback) => {
       console.log('Creating tree...');
       var files = [];
       files.push({
-        path: filename,
+        path: path,
         mode: '100644',
         type: 'blob',
         content: code
