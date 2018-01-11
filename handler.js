@@ -1,11 +1,17 @@
 'use strict';
 
+const jobsFile = process.env.JOBS_FILE || 'jobs.yml';
+
 module.exports.crawlerRemoteJobs = (event, context, callback) => {
   
-  const S3PutObject = require('./lib/S3').putObject
+  const S3Lib = require('./lib/S3')
       , stackoverflow = require('./stackoverflow-jobs')
       , YAML = require('yamljs')
+      , bucketName = process.env.BUCKET_NAME
+      , region = process.env.REGION || process.env.AWS_REGION
   ;
+
+  S3Lib.setConfig(bucketName, region);
   
   stackoverflow.run(function(error, results) {
     let output = [];
@@ -16,7 +22,7 @@ module.exports.crawlerRemoteJobs = (event, context, callback) => {
     
     let yamlString = YAML.stringify(output, 4);
 
-    S3PutObject(yamlString, 'jobs.yml', 'public-read', function(err, data) {
+    S3Lib.putObject(yamlString, jobsFile, 'public-read', function(err, data) {
       if (err) console.log('error', err, err.stack); // an error occurred
       else     console.log('success', data);         // successful response
     });

@@ -1,6 +1,14 @@
 const Crawler = require("crawler");
 const async   = require("async");
-const proxy   = 'http://198.50.160.147:8888';
+const proxy   = process.env.PROXY || false;
+
+function getQueueParams(URL) {
+  let params = { uri: URL };
+  if (proxy) {
+    params['proxy'] = proxy;
+  }
+  return params;
+}
 
 function getNumberOfPages(URL, callback) {
   const c = new Crawler({
@@ -18,7 +26,9 @@ function getNumberOfPages(URL, callback) {
     }
   });
 
-  c.queue({ uri: URL, proxy: proxy });
+  let queueParams = getQueueParams(URL);
+
+  c.queue(queueParams);
 }
 
 function getPageContent(URL, callback) {
@@ -63,7 +73,9 @@ function getPageContent(URL, callback) {
     }
   });
 
-  c.queue({ uri: URL, proxy: proxy });
+  let queueParams = getQueueParams(URL);
+
+  c.queue(queueParams);
 }
 
 const URL = 'https://stackoverflow.com/jobs?l=Remote&sort=p';

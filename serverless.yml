@@ -7,34 +7,59 @@
 # The `service` block is the name of the service
 service: serverless-remote-cc
 
-custom:
-  bucket: remoto-cc
-
 # The `provider` block defines where your service will be deployed
 provider:
   name: aws
   runtime: nodejs6.10
-  memorySize: 1024
+  custom: ${file(./config/lambda.${opt:stage, 'dev'}.yml)}
   iamRoleStatements:
     - Effect: Allow
       Action:
         - s3:*
       Resource: "*"
 
+# resources:
+#   Resources:
+#     S3BucketUpload:
+#       Type: AWS::S3::Bucket
+#       Properties:
+#         BucketName: ${self:custom.bucket} 
+#     RemotoCCLambdaPermissionUploadS3:
+#       Type: AWS::Lambda::Permission
+#       FunctionName: 
+#       Properties:
+#         SourceArn: arn:aws:s3:::${self:custom.bucket}
+
+# resources:
+#   Resources:
+#     S3BucketData:
+#       Type: AWS::S3::Bucket
+#       Properties:
+#         BucketName: ${file(./config/lambda.${opt:stage, 'dev'}.yml):bucketName}
+
 # The `functions` block defines what code to deploy
 functions:
   crawlerRemoteJobs:
     handler: handler.crawlerRemoteJobs
-    timeout: 60
+    environment:
+      PROXY: ${file(./config/lambda.${opt:stage, 'dev'}.yml):crawlerProxy}
+      JOBS_FILE: ${file(./config/lambda.${opt:stage, 'dev'}.yml):jobsFile}
+      BUCKET_NAME: ${file(./config/lambda.${opt:stage, 'dev'}.yml):bucketName}
+      REGION: ${self:provider.custom.region}
     events:
-      - http:
-          path: crawler-remote-jobs
-          method: get
-          # cors: true // use only in production
+      - schedule: ${file(./config/lambda.${opt:stage, 'dev'}.yml):crawlerSchedule}
+  
   sendJobsFileToRepository:
     handler: handler.sendJobsFileToRepository
+    environment:
+      GITHUB_TOKEN: ${file(./config/lambda.${opt:stage, 'dev'}.yml):githubToken}
+      GITHUB_OWNER: ${file(./config/lambda.${opt:stage, 'dev'}.yml):githubOwner}
+      GITHUB_REPO: ${file(./config/lambda.${opt:stage, 'dev'}.yml):githubRepo}
+      GITHUB_FILE: ${file(./config/lambda.${opt:stage, 'dev'}.yml):jobsFile}
+      DATA_FILE: ${file(./config/lambda.${opt:stage, 'dev'}.yml):githubDataFile}
     events:
-      - http:
-          path: send-jobs-file-to-repository
-          method: get
-          # cors: true // use only in production
+      - s3:
+          bucket: ${file(./config/lambda.${opt:stage, 'dev'}.yml):bucketName}
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: ${file(./config/lambda.${opt:stage, 'dev'}.yml):jobsFile}

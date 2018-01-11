@@ -1,0 +1,19 @@
+# serveless custom config
+bucketName: remoto-cc
+region: us-east-1
+memorySize: 512
+
+# global
+jobsFile: jobs.yml
+
+# CRAWLER JOBS
+crawlerSchedule: rate(1 hour)
+crawlerProxy: http://198.50.160.147:8888
+
+# sendJobsFileToRepository
+githubOwner: remotobr
+githubRepo: remotobr.github.io
+githubDataFile: _data/output.yml
+
+# Personal API Access Token ~> https://github.com/blog/1509-personal-api-tokens
+# githubToken: <secret personal access token> 
