@@ -38,6 +38,8 @@ functions:
       GITHUB_REPO: ${file(./config/lambda.${opt:stage, 'dev'}.yml):githubRepo}
       GITHUB_FILE: ${file(./config/lambda.${opt:stage, 'dev'}.yml):jobsFile}
       DATA_FILE: ${file(./config/lambda.${opt:stage, 'dev'}.yml):githubDataFile}
+      BUCKET_NAME: ${file(./config/lambda.${opt:stage, 'dev'}.yml):bucketName}
+      REGION: ${self:provider.custom.region}
     events:
       - s3:
           bucket: ${file(./config/lambda.${opt:stage, 'dev'}.yml):bucketName}

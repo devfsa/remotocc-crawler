@@ -46,17 +46,22 @@ module.exports.crawlerRemoteJobs = (event, context, callback) => {
 module.exports.sendJobsFileToRepository = (event, context, callback) => {
 
   const GitHubApi = require('github');
-  const S3GetObject = require('./lib/S3').getObject;
+  const S3Lib = require('./lib/S3');
   const async = require('async');
   const moment = require('moment');
-  
+
+
   const user = process.env.GITHUB_OWNER;
   const repo = process.env.GITHUB_REPO;
   const filename = process.env.GITHUB_FILE;
   const token = process.env.GITHUB_TOKEN;
   const path = process.env.DATA_FILE;
+  const bucketName = process.env.BUCKET_NAME;
+  const region = process.env.REGION || process.env.AWS_REGION;
   const commitMessage = 'Code commited from AWS Lambda at ' + moment().format();
   
+  S3Lib.setConfig(bucketName, region);
+
   var code, referenceCommitSha, newTreeSha, newCommitSha;
 
   var github = new GitHubApi();
@@ -73,7 +78,7 @@ module.exports.sendJobsFileToRepository = (event, context, callback) => {
     // that needs to be pushed to github
     function(callback) {
       console.log('Getting Jobs from S3...');
-      S3GetObject(filename, function(err, data) {
+      S3Lib.getObject(filename, function(err, data) {
         if (err) console.log(err, err.stack);
         if (! err) {
           // code from s3 to commit to github
