@@ -18,25 +18,6 @@ provider:
         - s3:*
       Resource: "*"
 
-# resources:
-#   Resources:
-#     S3BucketUpload:
-#       Type: AWS::S3::Bucket
-#       Properties:
-#         BucketName: ${self:custom.bucket} 
-#     RemotoCCLambdaPermissionUploadS3:
-#       Type: AWS::Lambda::Permission
-#       FunctionName: 
-#       Properties:
-#         SourceArn: arn:aws:s3:::${self:custom.bucket}
-
-# resources:
-#   Resources:
-#     S3BucketData:
-#       Type: AWS::S3::Bucket
-#       Properties:
-#         BucketName: ${file(./config/lambda.${opt:stage, 'dev'}.yml):bucketName}
-
 # The `functions` block defines what code to deploy
 functions:
   crawlerRemoteJobs:
