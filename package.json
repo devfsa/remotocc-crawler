@@ -18,6 +18,10 @@
   "homepage": "http://remoto.cc",
   "dependencies": {
     "async": "^2.6.0",
-    "crawler": "^1.1.2"
+    "aws-sdk": "^2.176.0",
+    "crawler": "^1.1.2",
+    "github": "^13.1.0",
+    "moment": "^2.20.1",
+    "yamljs": "^0.3.0"
   }
 }
