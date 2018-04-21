@@ -11,8 +11,8 @@ crawlerSchedule: rate(1 hour)
 crawlerProxy: http://198.50.160.147:8888
 
 # sendJobsFileToRepository
-githubOwner: remotobr
-githubRepo: remotobr.github.io
+githubOwner: devfsa
+githubRepo: remotocc-site
 githubDataFile: _data/output.yml
 
 # Personal API Access Token ~> https://github.com/blog/1509-personal-api-tokens
